@@ -12,7 +12,7 @@ class UserObserver
      */
     public function created(User $user): void
     {
-        //$user->notify(new UserRegistered($user));
+        $user->notify(new UserRegistered($user));
     }
 
     /**

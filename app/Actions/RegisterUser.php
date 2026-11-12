@@ -15,8 +15,6 @@ class RegisterUser
     {
         $user = User::create($data);
 
-        $user->notify(new UserRegistered($user));
-
         return $user;
     }
 }
