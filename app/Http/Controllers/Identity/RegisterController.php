@@ -10,6 +10,7 @@ class RegisterController extends Controller
 {
     /**
      * Register a new user.
+     * @unauthenticated
      */
     public function register(RegiserUserRequest $request)
     {
