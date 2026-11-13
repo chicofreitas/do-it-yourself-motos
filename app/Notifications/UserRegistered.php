@@ -34,7 +34,7 @@ class UserRegistered extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->line('Your account has been created.')
-            ->action('Confirm Email Address', url('/email/verify/' . $notifiable->id . '/' . $notifiable->email_token))
+            ->action('Confirm Email Address', url('/email/verify/' . $notifiable->id . '/' . sha1($notifiable->getEmailForVerification()) ) )
             ->line('Thank you for using our application!');
     }
 
