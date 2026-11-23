@@ -2,8 +2,10 @@
 
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Notification;
 use Laravel\Sanctum\Sanctum;
 
 uses(RefreshDatabase::class);
@@ -53,4 +55,28 @@ it('returns 403 when the verification link belongs to another user', function ()
     $response->assertForbidden();
 
     expect($user->fresh()->hasVerifiedEmail())->toBeFalse();
+});
+
+it('returns 200 and resends a verification notification to the authenticated user', function () {
+    $user = User::factory()->unverified()->create();
+    Sanctum::actingAs($user);
+    Notification::fake();
+
+    $response = $this->postJson('/api/v1/email/verification-notification');
+
+    $response->assertOk()
+        ->assertExactJson(['message' => 'Verification email resent.']);
+
+    Notification::assertSentTo($user, VerifyEmail::class);
+    expect($user->fresh()->hasVerifiedEmail())->toBeFalse();
+});
+
+it('returns 401 and does not send a verification notification when unauthenticated', function () {
+    Notification::fake();
+
+    $response = $this->postJson('/api/v1/email/verification-notification');
+
+    $response->assertUnauthorized();
+
+    Notification::assertNothingSent();
 });

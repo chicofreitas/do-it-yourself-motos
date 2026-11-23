@@ -1,11 +1,11 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Identity\RegisterController;
+use App\Http\Controllers\Administration\UserController;
 use App\Http\Controllers\Identity\AuthController;
 use App\Http\Controllers\Identity\EmailVerificationController;
-use App\Http\Controllers\Administration\UserController;
+use App\Http\Controllers\Identity\RegisterController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::get('user', function (Request $request) {
     return $request->user();
@@ -17,11 +17,14 @@ Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 've
     ->middleware(['auth:sanctum'])
     ->name('verification.verify');
 
-//Route::post('/email/resend/notification', [EmailVerificationController::class, 'resend'])->name('resend-verification-email');
-//Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('reset-password');
+Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])
+    ->middleware(['auth:sanctum'])
+    ->name('verification.send');
 
-//Route::post('logout', [LogoutController::class, 'logout'])->name('logout');
+// Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('reset-password');
 
-Route::prefix('admin')->group(function (){
+// Route::post('logout', [LogoutController::class, 'logout'])->name('logout');
+
+Route::prefix('admin')->group(function () {
     Route::get('users', [UserController::class, 'index'])->name('admin.users.index');
 });
