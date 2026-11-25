@@ -10,27 +10,29 @@ class ResetPasswordController extends Controller
 {
     /**
      * Send reset password link.
-	 * @unauthenticated
+     *
+     * @unauthenticated
      */
     public function forgot(Request $request)
     {
         $request->validate(['email' => 'required|email']);
- 
-		$status = Password::sendResetLink(
-			$request->only('email')
-		);
 
-		if ($status === Password::ResetLinkSent){
-			return response()->json($status, 201);
-		}
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        if ($status === Password::ResetLinkSent) {
+            return response()->json($status, 201);
+        }
     }
 
-	/**
+    /**
      * Reset password.
-	 * @unauthenticated
+     *
+     * @unauthenticated
      */
-	public function reset(Request $request, string $token)
-	{
-	    return response()->json($token, 201);
-	}
+    public function reset(Request $request, string $token)
+    {
+        return response()->json($token, 201);
+    }
 }
